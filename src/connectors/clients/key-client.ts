@@ -59,7 +59,7 @@ export class KeyClient{
 
 
     async userAccessGetQuery(id : string){
-        return await this.redisService.userAccessGetQuery("eb045a51-7902-420f-adb3-9b6a4c2fba96")
+        return await this.redisService.userAccessGetQuery(id)
     }
 
 
