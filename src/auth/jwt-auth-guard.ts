@@ -9,6 +9,7 @@ export class JwtAuthGuard implements CanActivate {
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
+      
         const request = context.switchToHttp().getRequest();
         const token = request.headers.authorization?.split(' ')[1]; 
 
@@ -20,6 +21,6 @@ export class JwtAuthGuard implements CanActivate {
             throw new UnauthorizedException('Invalid token');
         }
 
-        return true; // Token is valid
+        return true; 
     }
 }

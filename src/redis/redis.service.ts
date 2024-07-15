@@ -8,7 +8,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     this.client = new Redis({
-      host: process.env.REDIS_HOST || "host.docker.internal",
+      host: process.env.REDIS_HOST || "localhost",
       port: parseInt(process.env.REDIS_PORT) || 6379,
     });
   }
