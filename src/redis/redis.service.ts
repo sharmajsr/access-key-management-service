@@ -26,14 +26,18 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return this.client.del(key);
   }
 
-  async addRequestTimestamp(accessKey: string, timestamp: number): Promise<number> {
+  async addRequestTimestamp(accessKey: string, timestamp: number): Promise<any> {
+    console.log(`here `,accessKey , timestamp )
     const key = `key:${accessKey}:requests`;
-    return await this.client.zadd(key, timestamp.toString(), timestamp.toString());
+    let requestsAdded =  await this.client.zadd(key, timestamp.toString(), timestamp.toString());
+    return { "status" : requestsAdded == 1 }
 }
 
 async countRequestsInRange(accessKey: string, startTimestamp: number, endTimestamp: number): Promise<number> {
     const key = `key:${accessKey}:requests`;
-    return await this.client.zcount(key, startTimestamp.toString(), endTimestamp.toString());
+    let resp =  await this.client.zcount(key, startTimestamp.toString(), endTimestamp.toString());
+    console.log(resp);
+    return resp;
 }
 
 async setAccessKeyData(accessKey: string, rateLimit: string, expiration: string, status: string, userId: string): Promise<number> {
@@ -111,7 +115,7 @@ async getAllAccessKeyData(accessKey: string): Promise<{[key: string]: string}> {
   }
 }
 
-async userAccessGetQuery(accessKey : string): Promise<boolean>{
+async userAccessGetQuery(accessKey : string): Promise<any>{
 
   const currentTimeInSeconds = Math.floor(Date.now() / 1000);
   const keyDetails = await this.getAllAccessKeyData(accessKey);
@@ -129,9 +133,7 @@ async userAccessGetQuery(accessKey : string): Promise<boolean>{
   // console.log(`%s - %s `,currentTimeInSeconds,timeMinus60Seconds)
   const countRequestsInRange = await this.countRequestsInRange(accessKey,timeMinus60Seconds,currentTimeInSeconds)
   // console.log("Requwests in range ",countRequestsInRange)
-  return parseInt(rateLimitOfUser) > countRequestsInRange;
+  let val = parseInt(rateLimitOfUser) > countRequestsInRange
+  return { "status" : val };
 }
-
-
-
 }

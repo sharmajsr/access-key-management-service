@@ -13,6 +13,10 @@ export class KeyClient{
     constructor(private readonly redisService: RedisService) {}
 
 
+    async addRequests(id : string){
+        const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+        return await this.redisService.addRequestTimestamp(id,currentTimeInSeconds)
+    }
     async getAllKeyDetails( ): Promise<any>{
         let keyResponseDto = new KeyResponseDto();
         let resp = await this.redisService.getAllHashKeys()

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from '@nes
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {  ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
-import { KeyCreateCommand, KeyUpdateCommand } from '../commands';
+import { KeyAddRequestsCommand, KeyCreateCommand, KeyUpdateCommand } from '../commands';
 import { KeyCreationDto, KeyUpdateDto } from '../core/dtos';
 import { QueryParamDto } from '../core/dtos/key-query-param.dto';
 import { KeyResponseDto } from '../core/dtos/key.response.dto';
@@ -19,6 +19,16 @@ export class AccessKeyController {
   @Post()
   async create(@Body() keyCreationDto: KeyCreationDto) {
     return this.commandBus.execute(new KeyCreateCommand(keyCreationDto));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Add Requests',
+  })
+  @Post('add-requests')
+  async addRequests(@Body() keyCreationDto: KeyCreationDto) {
+  
+    return this.commandBus.execute(new KeyAddRequestsCommand(keyCreationDto));
   }
 
   @UseGuards(JwtAuthGuard)
